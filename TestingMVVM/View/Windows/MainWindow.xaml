@@ -1,0 +1,74 @@
+﻿<Window x:Class="TestingMVVM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:vm ="clr-namespace:TestingMVVM.ViewModels"
+        xmlns:local="clr-namespace:TestingMVVM"
+        mc:Ignorable="d"
+        Title="CountriesGetter" MinWidth="800" MinHeight="850">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF2B80D4" Offset="0.003"/>
+            <GradientStop Color="#FF81B8F0" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid ShowGridLines="True" MinWidth="800">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26*"/>
+            <RowDefinition Height="204*"/>
+            <RowDefinition Height="37*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" MaxWidth="500" MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
+            <TextBox x:Name="InputCountryName" Text="{Binding Path=CountryName, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0"/>
+            <Button x:Name="GetCountry" Height="30" MinWidth="240" Background="#FF673AB7" Content="GET COUNTRY" IsDefault = "true" Cursor="Hand" Margin="5,0,0,0" Click="GetCountry_Click" />
+        </StackPanel>
+        
+        
+
+        <DataGrid x:Name="ApiList" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1"  Margin="10,10,10,10" RowBackground="#FF70A0F5" AlternatingRowBackground="#FF70D7F5" Background="Transparent">
+
+            <DataGrid.Columns>
+
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox x:Name="checkBox"  Height="20"  IsChecked="{Binding IsPicked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
+                <DataGridTextColumn Binding="{Binding Path = name}" IsReadOnly="True" Header="Name" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path = numericCode}" IsReadOnly="True" Header="Code" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path = capital}" IsReadOnly="True" Header="Capital" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path = area}" IsReadOnly="True" Header="Area" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path = population}" IsReadOnly="True" Header="Population" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path = region}" IsReadOnly="True" Header="Region" Width="*"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+
+        <StackPanel Grid.Row="2" MaxWidth="500" MinWidth="200">
+            <Button x:Name="AddToDataBase" Content="Add To DataBase" MinWidth="100" Margin="0,10,0,0" Height="39" Click="AddToDataBase_Click" />
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10" MinWidth="510" >
+                <Button x:Name="ShowAllData" Content="Show All Data" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="250" MaxWidth="400" Margin="0,0,5,0" Height="40" Click="ShowAllData_Click"/>
+                <Button x:Name="DeleteAllFata" Content="Delete All Data" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="250" MaxWidth="400" Margin="5,0,0,0" Height="40" Width="180" Click="DeleteAllFata_Click"/>
+            </WrapPanel>
+        </StackPanel>
+
+
+    </Grid>
+</Window>
