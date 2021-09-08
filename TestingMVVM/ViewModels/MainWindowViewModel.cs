@@ -6,33 +6,55 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using TestingMVVM.ViewModels.Base;
 using TestingMVVM.Infrastructure.Commands;
+using TestingMVVM.Model.Methods;
+using System.Collections.ObjectModel;
+using TestingMVVM.Model.ModelOfCountry;
 
 namespace TestingMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-        #region Поле ввода названия страны
+        #region Поля и свойства
+
+        #region Коллекция найденныйх стран
+
+        private ObservableCollection<CountryModel> _Countries;
+
+        public ObservableCollection<CountryModel> Countries
+        {
+            get => _Countries;
+            set => Set(ref _Countries, value);
+        }
+
+        #endregion
+
+        #region Название страны
 
         private string _PartialUrl;
 
         public string PartialUrl
         {
             get => _PartialUrl;
-            set => _PartialUrl = value;
+            set => Set(ref _PartialUrl, value);
         }
+
+        #endregion
 
         #endregion
 
         #region Команды
 
-        #region SendHttpCommand
+        #region GetCountriesCommand
 
-        public ICommand SendHttpCommand { get; }
+        public ICommand GetCountriesCommand { get;}
 
-        private bool CanSendHttpCommandExecute(object p) => true;
+        private bool CanGetCountriesCommandExecute(object p) => true;
 
-        private void OnSendHttpCommandExecute(object p)
+        private async void OnGetCountriesCommandExecute(object p)
         {
+            SendHttp sendHttp = new SendHttp();
+
+            Countries = await sendHttp.HttpResponse(PartialUrl);
 
         }
 
@@ -45,7 +67,7 @@ namespace TestingMVVM.ViewModels
 
             #region Команды
 
-            SendHttpCommand = new LambdaCommand(OnSendHttpCommandExecute, CanSendHttpCommandExecute);
+            GetCountriesCommand = new LambdaCommand(OnGetCountriesCommandExecute, CanGetCountriesCommandExecute);
 
             #endregion
 

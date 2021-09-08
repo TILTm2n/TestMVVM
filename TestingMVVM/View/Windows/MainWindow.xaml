@@ -30,26 +30,26 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" MaxWidth="500" MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
-            <TextBox x:Name="InputCountryName" Text="{Binding Path=CountryName, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0"/>
-            <Button x:Name="GetCountry" Height="30" MinWidth="240" Background="#FF673AB7" Content="GET COUNTRY" IsDefault = "true" Cursor="Hand" Margin="5,0,0,0" Click="GetCountry_Click" />
+            <TextBox x:Name="InputCountryName" Text="{Binding Path=PartialUrl, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0"/>
+            <Button x:Name="GetCountry" Command="{Binding GetCountriesCommand}" Height="30" MinWidth="240" Background="#FF673AB7" Content="GET COUNTRY" IsDefault = "true" Cursor="Hand" Margin="5,0,0,0" Click="GetCountry_Click" />
         </StackPanel>
         
         
 
-        <DataGrid x:Name="ApiList" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1"  Margin="10,10,10,10" RowBackground="#FF70A0F5" AlternatingRowBackground="#FF70D7F5" Background="Transparent">
+        <DataGrid x:Name="ApiList" ItemsSource="{Binding Countries}" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1"  Margin="10,10,10,10" RowBackground="#FF70A0F5" AlternatingRowBackground="#FF70D7F5" Background="Transparent">
 
             <DataGrid.Columns>
 
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox x:Name="checkBox"  Height="20"  IsChecked="{Binding IsPicked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                            <CheckBox x:Name="checkBox"  Height="20"  IsChecked="{Binding Path=IsPicked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
 
-                <DataGridTextColumn Binding="{Binding Path = name}" IsReadOnly="True" Header="Name" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path =name}" IsReadOnly="True" Header="Name" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path = numericCode}" IsReadOnly="True" Header="Code" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path = capital}" IsReadOnly="True" Header="Capital" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path = area}" IsReadOnly="True" Header="Area" Width="*"/>

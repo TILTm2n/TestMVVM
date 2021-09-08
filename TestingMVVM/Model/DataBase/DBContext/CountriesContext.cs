@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using TestingMVVM.Model.DataBase.Entities
+using TestingMVVM.Model.DataBase.Entities;
 #nullable disable
 
 namespace TestingMVVM.Model.DataBase.DBContext
