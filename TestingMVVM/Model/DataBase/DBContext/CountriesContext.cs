@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Data.SqlClient;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using TestingMVVM.Model.DataBase.Entities;
 #nullable disable
 
@@ -26,9 +29,85 @@ namespace TestingMVVM.Model.DataBase.DBContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=EVGENPC;Initial Catalog=Countries;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseSqlServer(CodeFirstUpdateConnectionString);
             }
         }
+
+        #region Источник БД
+
+        private static string _SourceDB;
+
+        public static string SourceDB
+        {
+            get => _SourceDB;
+            set => _SourceDB = value;
+        }
+
+        #endregion
+
+        #region Название БД
+
+        private static string _CatalogDB;
+
+        public static string CatalogDB
+        {
+            get => _CatalogDB;
+            set => _CatalogDB = value;
+        }
+
+        #endregion
+
+        private static string _codeFirstUpdateConnectionString;
+
+        private static string CodeFirstUpdateConnectionString
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_codeFirstUpdateConnectionString))
+                {
+                    string dir = Environment.CurrentDirectory;
+
+                    var config = new ConfigurationBuilder()
+                        .AddJsonFile(Path.Combine(Environment.CurrentDirectory, "appsettings.json"))
+                        .Build();
+
+                    var codeFirstConnectionString = config.GetSection("ConnectionStrings")["CountriesContext"];
+
+                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(codeFirstConnectionString);
+
+                    builder.DataSource = SourceDB;
+                    builder.InitialCatalog = CatalogDB;
+                    //builder.IntegratedSecurity = true;
+                    //builder.ConnectTimeout = 30;
+                    //builder.Encrypt = false;
+                    //builder.TrustServerCertificate = false;
+                    //builder.ApplicationIntent = ApplicationIntent.ReadWrite;
+                    //builder.MultiSubnetFailover = false;
+
+                    _codeFirstUpdateConnectionString = builder.ConnectionString;
+                }
+                return _codeFirstUpdateConnectionString;
+            }
+        }
+
+        //#region получение строки
+        //public static string CreateConnectionString(string DataSource, string Catalog)
+        //{
+        //    var config = new ConfigurationBuilder()
+        //                .AddJsonFile(Path.Combine(Environment.CurrentDirectory, "appsettings.json"))
+        //                .Build();
+
+        //    var codeFirstConnectionString = config.GetSection("ConnectionStrings")["CountriesContext"];
+
+        //    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(codeFirstConnectionString);
+
+        //    builder.DataSource = DataSource;
+        //    builder.InitialCatalog = Catalog;
+
+        //    return builder.ConnectionString;
+        //}
+        //#endregion
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

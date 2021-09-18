@@ -7,7 +7,7 @@
         xmlns:vm ="clr-namespace:TestingMVVM.ViewModels"
         xmlns:local="clr-namespace:TestingMVVM"
         mc:Ignorable="d"
-        Title="CountriesGetter" MinWidth="800" MinHeight="850">
+        Title="CountriesGetter" Width="850" MinWidth="850" Height="650" MinHeight="650">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -20,27 +20,37 @@
     <Grid ShowGridLines="True" MinWidth="800">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="26*"/>
-            <RowDefinition Height="204*"/>
-            <RowDefinition Height="37*"/>
+            <RowDefinition Height="43*"/>
+            <RowDefinition Height="188*"/>
+            <RowDefinition Height="86*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" MaxWidth="500" MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
-            <TextBox x:Name="InputCountryName" Text="{Binding Path=PartialUrl, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0"/>
-            <Button x:Name="GetCountry" Command="{Binding GetCountriesCommand}" Height="30" MinWidth="240" Background="#FF673AB7" Content="GET COUNTRY" IsDefault = "true" Cursor="Hand" Margin="5,0,0,0" Click="GetCountry_Click" />
+        <StackPanel MaxWidth="500" MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" Height="30" Width="490">
+            <TextBox x:Name="InputCountryName" Text="{Binding Path=PartialUrl, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0"/>
+
+            <!--<TextBox x:Name="InputCountryName" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0">
+                <TextBox.Text>
+                    <Binding Path="PartialUrl" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>-->
+            
+            <Button x:Name="GetCountry" Command="{Binding GetCountriesCommand}" Height="30" MinWidth="240" Background="#FF673AB7" Content="GET COUNTRY" IsDefault = "true" Cursor="Hand" Margin="5,0,0,0"/>
         </StackPanel>
-        
-        
+
+
 
         <DataGrid x:Name="ApiList" ItemsSource="{Binding Countries}" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1"  Margin="10,10,10,10" RowBackground="#FF70A0F5" AlternatingRowBackground="#FF70D7F5" Background="Transparent">
-
             <DataGrid.Columns>
-
-                <DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Visibility="{Binding VisibilityValue, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox x:Name="checkBox"  Height="20"  IsChecked="{Binding Path=IsPicked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
@@ -49,7 +59,7 @@
                 </DataGridTemplateColumn>
 
 
-                <DataGridTextColumn Binding="{Binding Path =name}" IsReadOnly="True" Header="Name" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path = name}" IsReadOnly="True" Header="Name" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path = numericCode}" IsReadOnly="True" Header="Code" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path = capital}" IsReadOnly="True" Header="Capital" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path = area}" IsReadOnly="True" Header="Area" Width="*"/>
@@ -60,14 +70,35 @@
         </DataGrid>
 
 
+        <WrapPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" MinHeight="156" MinWidth="800" Height="156" Width="800">
+            <StackPanel MaxWidth="500" MinWidth="200" Width="500" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,5,5,5">
+                <Button x:Name="AddToDataBase" Command="{Binding AddToDataBaseCommand}" Content="Add To DataBase" MinWidth="100" Margin="0,10,0,0" Height="39"/>
+                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10" MinWidth="510" >
+                    <Button x:Name="ShowAllData" Command="{Binding ShowAllDataCommand}" Content="Show All Data" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="250" MaxWidth="400" Margin="0,0,5,0" Height="40"/>
+                    <Button x:Name="DeleteAllFata" Command="{Binding DeleteAllDataCommand}" Content="Delete All Data" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="250" MaxWidth="400" Margin="5,0,0,0" Height="40" Width="180"/>
+                </WrapPanel>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Height="auto" Width="auto" Margin="5,5,5,5">
+                <TextBlock HorizontalAlignment="Center" Text="ENTER DB PARAMETERS" TextWrapping="Wrap" VerticalAlignment="Center" Height="24" TextAlignment="Center" FontStyle="Normal" FontWeight="Bold" FontFamily="Arial" Foreground="Black" FontSize="16"/>
+                <WrapPanel Height="auto" Width="auto" HorizontalAlignment="Left">
+                    <TextBlock Text="Data Source :" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial" FontSize="16" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Path=DataSource, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextWrapping="Wrap" Width="120" Margin="10" Cursor="IBeam"/>
+                </WrapPanel>
+                <WrapPanel Height="auto" Width="auto">
+                    <TextBlock Text="Initial Catalog :" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial" FontSize="16" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Path=Catalog, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextWrapping="Wrap" Width="120" Margin="10"/>
+                </WrapPanel>
+                <WrapPanel Height="auto" Width="auto" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="Connect" Command="{Binding ConnectToDataBaseCommand}" Cursor="Hand" Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding Checked}" Margin="5,0,0,0"/>
+                </WrapPanel>
+            </StackPanel>
+        </WrapPanel>
 
-        <StackPanel Grid.Row="2" MaxWidth="500" MinWidth="200">
-            <Button x:Name="AddToDataBase" Content="Add To DataBase" MinWidth="100" Margin="0,10,0,0" Height="39" Click="AddToDataBase_Click" />
-            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10" MinWidth="510" >
-                <Button x:Name="ShowAllData" Content="Show All Data" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="250" MaxWidth="400" Margin="0,0,5,0" Height="40" Click="ShowAllData_Click"/>
-                <Button x:Name="DeleteAllFata" Content="Delete All Data" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="250" MaxWidth="400" Margin="5,0,0,0" Height="40" Width="180" Click="DeleteAllFata_Click"/>
-            </WrapPanel>
-        </StackPanel>
+
+
+
+
 
 
     </Grid>
