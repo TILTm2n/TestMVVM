@@ -30,7 +30,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel MaxWidth="500" MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" Height="30" Width="490">
-            <TextBox x:Name="InputCountryName" Text="{Binding Path=PartialUrl, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0"/>
+            <TextBox x:Name="InputCountryName" Text="{Binding Path=PartialUrl, ValidatesOnExceptions=True,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0"/>
 
             <!--<TextBox x:Name="InputCountryName" materialDesign:HintAssist.Hint="Insert name of your Country" Background="Transparent" MinWidth="240" Height="30" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Cursor="IBeam" Margin="0,0,5,0">
                 <TextBox.Text>
@@ -41,16 +41,16 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>-->
-            
+
             <Button x:Name="GetCountry" Command="{Binding GetCountriesCommand}" Height="30" MinWidth="240" Background="#FF673AB7" Content="GET COUNTRY" IsDefault = "true" Cursor="Hand" Margin="5,0,0,0"/>
         </StackPanel>
 
 
 
-        <DataGrid x:Name="ApiList" ItemsSource="{Binding Countries}" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1"  Margin="10,10,10,10" RowBackground="#FF70A0F5" AlternatingRowBackground="#FF70D7F5" Background="Transparent">
+        <DataGrid x:Name="ApiList" ItemsSource="{Binding Countries}"  AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1"  Margin="10,10,10,10" RowBackground="#FF70A0F5" AlternatingRowBackground="#FF70D7F5" Background="Transparent">
             <DataGrid.Columns>
-                
-                <DataGridTemplateColumn Visibility="{Binding VisibilityValue, UpdateSourceTrigger=PropertyChanged}">
+
+                <DataGridTemplateColumn Visibility="{Binding VisibilityValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox x:Name="checkBox"  Height="20"  IsChecked="{Binding Path=IsPicked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
@@ -90,7 +90,7 @@
                 </WrapPanel>
                 <WrapPanel Height="auto" Width="auto" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button Content="Connect" Command="{Binding ConnectToDataBaseCommand}" Cursor="Hand" Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding Checked}" Margin="5,0,0,0"/>
+                    <Ellipse Height="15" Stroke="Black" Width="15" Fill="{Binding DbColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                 </WrapPanel>
             </StackPanel>
         </WrapPanel>

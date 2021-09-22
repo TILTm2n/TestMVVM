@@ -54,9 +54,9 @@ namespace TestingMVVM.Model.Methods
                         }
                     }
                 }
-                catch (ArgumentNullException ex)
+                catch
                 {
-                    throw new Exception($"Сначала необходимо выбрать страну!!! \n{ex.Message}");
+                    throw new Exception($"Не выбрана страна или не найдена база данных!!!");
                 }
             }
         }

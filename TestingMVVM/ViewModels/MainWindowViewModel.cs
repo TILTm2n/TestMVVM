@@ -9,17 +9,31 @@ using TestingMVVM.Infrastructure.Commands;
 using TestingMVVM.Model.Methods;
 using System.Collections.ObjectModel;
 using TestingMVVM.Model.ModelOfCountry;
+using System.Text.RegularExpressions;
 using System.Windows.Threading;
 using System.Windows;
 using TestingMVVM.View.Windows;
 using TestingMVVM.Model.DataBase.DBContext;
 using System.ComponentModel;
 
+
 namespace TestingMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
         #region Поля и свойства
+
+        #region Индикатор подключения к БД
+
+        private string _DbColor = "Red";
+
+        public string DbColor
+        {
+            get => _DbColor;
+            set => Set(ref _DbColor, value);
+        }
+
+        #endregion
 
         #region Источник БД
 
@@ -76,13 +90,8 @@ namespace TestingMVVM.ViewModels
         public string PartialUrl
         {
             get => _PartialUrl;
-            set
-            {
-                if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-                    throw new Exception("Value cannot be empty");
+            set => Set(ref _PartialUrl, value);
 
-                Set(ref _PartialUrl, value);
-            }
         }
 
         #endregion
@@ -99,11 +108,20 @@ namespace TestingMVVM.ViewModels
 
         private async void OnGetCountriesCommandExecute(object p)
         {
-            VisibilityValue = Visibility.Visible;
+            try
+            {
+                VisibilityValue = Visibility.Visible;
 
-            SendHttp sendHttp = new SendHttp();
+                SendHttp sendHttp = new SendHttp();
 
-            Countries = await sendHttp.HttpResponse(PartialUrl);
+                Countries = await sendHttp.HttpResponse(PartialUrl);
+            }
+            catch(Exception HttpEx)
+            {
+                MessageBox.Show(HttpEx.Message);
+            }
+
+            
         }
 
         #endregion
@@ -119,9 +137,17 @@ namespace TestingMVVM.ViewModels
 
             await Task.Run(() =>
             {
-                AddToDB addToDB = new AddToDB();
+                try
+                {
+                    AddToDB addToDB = new AddToDB();
 
-                addToDB.AddToDb(Countries);
+                    addToDB.AddToDb(Countries);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                
             });
         }
 
@@ -137,11 +163,18 @@ namespace TestingMVVM.ViewModels
         {
             await Task.Run(() =>
             {
-                DeleteData deleteData = new DeleteData();
-                ShowData showData = new ShowData();
+                try
+                {
+                    DeleteData deleteData = new DeleteData();
+                    ShowData showData = new ShowData();
 
-                deleteData.DeleteAllData();
-                Countries = showData.ShowAllData();
+                    deleteData.DeleteAllData();
+                    Countries = showData.ShowAllData();
+                }
+                catch (Exception Ex)
+                {
+                    MessageBox.Show(Ex.Message);
+                }
             });
         }
 
@@ -155,15 +188,22 @@ namespace TestingMVVM.ViewModels
 
         private async void OnShowAllDataExecute(object p)
         {
-            VisibilityValue = Visibility.Collapsed;
+            VisibilityValue = Visibility.Hidden;
 
             await Task.Run(() => {
 
-                ShowData showData = new ShowData();
+                try
+                {
+                    ShowData showData = new ShowData();
 
-                //Dispatcher.BeginInvoke((Action)(() => Countries = showData.ShowAllData(Countries)));
+                    //Dispatcher.BeginInvoke((Action)(() => Countries = showData.ShowAllData(Countries)));
 
-                Countries = showData.ShowAllData();
+                    Countries = showData.ShowAllData();
+                }
+                catch(Exception Ex)
+                {
+                    MessageBox.Show(Ex.Message);
+                }
             });
         }
 
@@ -175,13 +215,26 @@ namespace TestingMVVM.ViewModels
 
         private bool CanConnectToDataBaseExecute(object p) => true;
 
-        private void OnConnectToDataBaseExecute(object p)
+        private async void OnConnectToDataBaseExecute(object p)
         {
-            CountriesContext.SourceDB = DataSource;
 
-            CountriesContext.CatalogDB = Catalog;
-            
-            
+            await Task.Run(() => {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(DataSource) || string.IsNullOrWhiteSpace(Catalog) || string.IsNullOrEmpty(DataSource) || string.IsNullOrEmpty(Catalog))
+                        throw new Exception("Необходимо заполнить данные конфигурации базы данных");
+
+                    CountriesContext.SourceDB = DataSource;
+
+                    CountriesContext.CatalogDB = Catalog;
+
+                    DbColor = "Green";
+                }
+                catch (Exception DbConnectException)
+                {
+                    MessageBox.Show(DbConnectException.Message);
+                }
+            });
         }
 
         #endregion

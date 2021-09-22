@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using TestingMVVM.Model.DataBase.Entities;
 #nullable disable
 
@@ -59,55 +60,44 @@ namespace TestingMVVM.Model.DataBase.DBContext
 
         private static string _codeFirstUpdateConnectionString;
 
-        private static string CodeFirstUpdateConnectionString
+        public static string CodeFirstUpdateConnectionString
         {
             get
             {
                 if (string.IsNullOrWhiteSpace(_codeFirstUpdateConnectionString))
                 {
-                    string dir = Environment.CurrentDirectory;
+                    try
+                    {
+                        string dir = Environment.CurrentDirectory;
 
-                    var config = new ConfigurationBuilder()
-                        .AddJsonFile(Path.Combine(Environment.CurrentDirectory, "appsettings.json"))
-                        .Build();
+                        var config = new ConfigurationBuilder()
+                            .AddJsonFile(Path.Combine(Environment.CurrentDirectory, "appsettings.json"))
+                            .Build();
 
-                    var codeFirstConnectionString = config.GetSection("ConnectionStrings")["CountriesContext"];
+                        var codeFirstConnectionString = config.GetSection("ConnectionStrings")["CountriesContext"];
 
-                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(codeFirstConnectionString);
+                        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(codeFirstConnectionString);
 
-                    builder.DataSource = SourceDB;
-                    builder.InitialCatalog = CatalogDB;
-                    //builder.IntegratedSecurity = true;
-                    //builder.ConnectTimeout = 30;
-                    //builder.Encrypt = false;
-                    //builder.TrustServerCertificate = false;
-                    //builder.ApplicationIntent = ApplicationIntent.ReadWrite;
-                    //builder.MultiSubnetFailover = false;
+                        builder.DataSource = SourceDB;
+                        builder.InitialCatalog = CatalogDB;
+                        //builder.IntegratedSecurity = true;
+                        //builder.ConnectTimeout = 30;
+                        //builder.Encrypt = false;
+                        //builder.TrustServerCertificate = false;
+                        //builder.ApplicationIntent = ApplicationIntent.ReadWrite;
+                        //builder.MultiSubnetFailover = false;
 
-                    _codeFirstUpdateConnectionString = builder.ConnectionString;
+                        _codeFirstUpdateConnectionString = builder.ConnectionString;
+
+                    }
+                    catch
+                    {
+                        throw new Exception($"Сначала необходимо подключиться к базе данных!");
+                    }
                 }
                 return _codeFirstUpdateConnectionString;
             }
         }
-
-        //#region получение строки
-        //public static string CreateConnectionString(string DataSource, string Catalog)
-        //{
-        //    var config = new ConfigurationBuilder()
-        //                .AddJsonFile(Path.Combine(Environment.CurrentDirectory, "appsettings.json"))
-        //                .Build();
-
-        //    var codeFirstConnectionString = config.GetSection("ConnectionStrings")["CountriesContext"];
-
-        //    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(codeFirstConnectionString);
-
-        //    builder.DataSource = DataSource;
-        //    builder.InitialCatalog = Catalog;
-
-        //    return builder.ConnectionString;
-        //}
-        //#endregion
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
