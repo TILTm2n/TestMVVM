@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestingMVVM.ViewModels.Base;
@@ -9,12 +6,8 @@ using TestingMVVM.Infrastructure.Commands;
 using TestingMVVM.Model.Methods;
 using System.Collections.ObjectModel;
 using TestingMVVM.Model.ModelOfCountry;
-using System.Text.RegularExpressions;
-using System.Windows.Threading;
 using System.Windows;
-using TestingMVVM.View.Windows;
 using TestingMVVM.Model.DataBase.DBContext;
-using System.ComponentModel;
 
 
 namespace TestingMVVM.ViewModels

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -24,6 +25,14 @@ namespace TestingMVVM.Model.Methods
             {
                 throw new Exception($"Данные были введены некорректно! \nПожалуйста повторите попытку");
             }
+
+            var handler = new HttpClientHandler();
+
+            handler.ServerCertificateCustomValidationCallback +=
+                            (sender, certificate, chain, errors) =>
+                            {
+                                return true;
+                            };
 
             HttpClient client = new HttpClient();
 
